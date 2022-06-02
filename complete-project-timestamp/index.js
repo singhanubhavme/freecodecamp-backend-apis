@@ -25,20 +25,27 @@ app.get("/api/hello", function (req, res) {
 });
 
 // my code
+app.get("/api", (req, res) => {
+  return res.json({ "unix": new Date().getTime(), "utc": new Date() });
+})
+
 app.get("/api/:date", (req, res) => {
-  const date = req.params.date;
-  let getDate;
-  if (!date.includes("-")) {
-    getDate = new Date(parseInt(date));
-  } else {
-    getDate = new Date(date);
+  const date_string = req.params.date;
+  if (date_string == undefined) {
+    return res.json({ error: "Invalid Date" });
   }
-    if (getDate == "Invalid Date") {
-      return res.json({ error: "Invalid Date" });
-    } else {
-      const showDate = getDate.toUTCString();
-      return res.json({ "unix": getDate.getTime(), "utc": showDate });
-    }
+  let getDate;
+  if (/\d{5,}/.test(date_string)) {
+    getDate = new Date(parseInt(date_string));
+  } else {
+    getDate = new Date(date_string);
+  }
+  if (getDate == "Invalid Date") {
+    return res.json({ error: "Invalid Date" });
+  } else {
+    const showDate = getDate.toUTCString();
+    return res.json({ "unix": getDate.getTime(), "utc": showDate });
+  }
 })
 //my code
 
